@@ -6,3 +6,4 @@ authors = ["Tidest <michaelpulliam1@gmail.com>"]
 [dependencies]
 csv = "1.0.0-beta.5"
 rand = "0.3"
+clap = {version = "2.30", features = ["yaml"]}

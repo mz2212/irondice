@@ -1,40 +1,53 @@
+#[macro_use]
+extern crate clap;
+
 extern crate csv;
 extern crate rand;
 
-use csv::StringRecord;
 use std::path::PathBuf;
-use std::fs::OpenOptions;
+use clap::App;
 
 fn main() {
-    let mut currNum = String::from("");
+    let yaml = load_yaml!("cli.yml");
+    let matches = App::from_yaml(yaml).get_matches();
+    let mut curr_num = String::from("");
     let mut pass = String::from("");
     let start = csv::Position::new();
 
-    // Set up the wordlist reader...
-    // Will be able to change the wordlist eventually.
+    let len;
+    if matches.is_present("length") {
+        len = matches.value_of("length").unwrap().parse::<i8>().unwrap();
+    } else {
+        len = 6;
+    }
     let mut path = PathBuf::new();
-    path.push(std::env::current_exe().unwrap());
-    path.set_file_name("eff_large_wordlist.tsv");
+    if matches.is_present("wordlist") {
+        path = PathBuf::from(matches.value_of("wordlist").unwrap());
+    } else {
+        path.push(std::env::current_exe().unwrap());
+        path.set_file_name("eff_large_wordlist.tsv");
+    }
+
     let mut reader = csv::ReaderBuilder::new()
         .delimiter(b'\t')
         .has_headers(false)
         .from_path(path.as_path())
         .unwrap();
 
-    for i in 1..7 {
+    for i in 1..(len + 1) {
         for _ in 1..6 {
-            currNum.push_str(((rand::random::<u8>() % 6) + 1).to_string().as_str());
+            curr_num.push_str(((rand::random::<u8>() % 6) + 1).to_string().as_str());
         }
 
         for result in reader.records() {
             let record = result.unwrap();
-            if record.get(0).unwrap() == &currNum {
+            if record.get(0).unwrap() == &curr_num {
                 pass.push_str(&record.get(1).unwrap());
                 println!("Word {}: {}", i, &record.get(1).unwrap());
             }
         }
-        currNum = String::from("");
-        reader.seek(start.clone());
+        curr_num = String::from("");
+        let _ = reader.seek(start.clone());
     }
     println!("Passphrase: {}", pass);
 }
