@@ -6,6 +6,7 @@ extern crate rand;
 
 use std::path::PathBuf;
 use clap::App;
+use rand::Rng;
 
 fn main() {
     let yaml = load_yaml!("cli.yml");
@@ -13,6 +14,7 @@ fn main() {
     let mut curr_num = String::from("");
     let mut pass = String::from("");
     let start = csv::Position::new();
+    let mut gen = rand::os::OsRng::new().unwrap();
 
     let len;
     if matches.is_present("length") {
@@ -36,7 +38,7 @@ fn main() {
 
     for i in 1..(len + 1) {
         for _ in 1..6 {
-            curr_num.push_str(((rand::random::<u8>() % 6) + 1).to_string().as_str());
+            curr_num.push_str(((gen.next_u32() % 6) + 1).to_string().as_str());
         }
 
         for result in reader.records() {
