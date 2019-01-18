@@ -15,4 +15,10 @@ args:
       value_name: LENGTH
       help: Sets the number of words in the passphrase
       takes_value: true
+  - delimiter:
+      short: d
+      long: delimiter
+      value_name: SEP
+      help: Sets a seperator, if desired
+      takes_value: true
     

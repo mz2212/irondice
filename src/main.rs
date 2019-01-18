@@ -30,6 +30,13 @@ fn main() {
         path.set_file_name("eff_large_wordlist.tsv");
     }
 
+    let sep;
+    if matches.is_present("delimiter") {
+        sep = matches.value_of("delimiter").unwrap();
+    } else {
+        sep = "";
+    }
+
     let mut reader = csv::ReaderBuilder::new()
         .delimiter(b'\t')
         .has_headers(false)
@@ -45,11 +52,13 @@ fn main() {
             let record = result.unwrap();
             if record.get(0).unwrap() == &curr_num {
                 pass.push_str(&record.get(1).unwrap());
+                pass.push_str(&sep);
                 println!("Word {}: {}", i, &record.get(1).unwrap());
             }
         }
         curr_num = String::from("");
         let _ = reader.seek(start.clone());
     }
+    pass = pass.trim_right_matches(&sep).to_string();
     println!("Passphrase: {}", pass);
 }
