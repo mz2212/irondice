@@ -1,0 +1,3 @@
+# Archived repo.
+There's apparently a vulnerability in the TOML parser used in the version of CLAP that this software uses. It shouldn't be a problem in practice as the only toml getting parsed here is found in cli.yml, but you never know...  
+I personally don't recall my code works here, so I'm not sure how to go about updating it, thus the repo being archived.
